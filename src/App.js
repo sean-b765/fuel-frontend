@@ -5,27 +5,29 @@ import GoogleMapReact from "google-map-react";
 async function fetchNearest(coords, radius) {
   return await (
     await fetch(
-      `http://192.168.1.11:5000/nearestAndCheapest/${coords}?radius=${radius}`
+      `http://localhost:5000/nearestAndCheapest/${coords}?radius=${radius}`
     )
   ).json();
 }
 
-const Marker = ({ text }) => (
-  <div
-    style={{
-      padding: "0.1rem 20px",
-      borderRadius: "0.5rem",
-      background: "#0000ff",
-      position: "relative",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      color: "#FFFFFF",
-    }}
-  >
-    <p>{text}</p>
-  </div>
-);
+const Marker = ({ text }) => {
+  return (
+    <div
+      style={{
+        padding: "0.1rem 20px",
+        borderRadius: "0.5rem",
+        background: "#0000ff",
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "#FFFFFF",
+      }}
+    >
+      <p>{text}</p>
+    </div>
+  );
+};
 
 function App() {
   const [location, setLocation] = useState({ lat: null, lng: null });
@@ -41,13 +43,10 @@ function App() {
     }
   }, []);
 
-  useLayoutEffect(() => {
-    //    if (!location.lat || !location.lng) return;
+  useEffect(() => {
+    if (!location.lat || !location.lng) return;
 
-    fetchNearest(
-      `${location.lat || "-32.0607997"},${location.lng || "115.9101534"}`,
-      radius
-    )
+    fetchNearest(`${location.lat},${location.lng}`, radius)
       .then((res) => {
         setStations(res.result || []);
         setNearestStation(res.nearest);
@@ -58,7 +57,7 @@ function App() {
 
   return (
     <div className="App">
-      {true ? (
+      {location.lat ? (
         nearestStation ? (
           <>
             <div className="nearest">
@@ -67,6 +66,14 @@ function App() {
                 <p>
                   <span>{nearestStation.price}c</span>/litre
                 </p>
+                <p>
+                  {nearestStation.address}, {nearestStation.location}
+                </p>
+                {nearestStation.duration && nearestStation.distance && (
+                  <p>
+                    {nearestStation.distance}, ~{nearestStation.duration}
+                  </p>
+                )}
               </header>
               <div
                 style={{ height: "300px", width: "100%" }}
@@ -79,7 +86,7 @@ function App() {
                     lng: nearestStation.longitude,
                   }}
                   bootstrapURLKeys={{
-                    key: "AIzaSyC0dKVItrG1Sr7cvnLSPfWiZWKxmcAfe68",
+                    key: process.env.REACT_APP_MAPS_KEY,
                   }}
                 >
                   <Marker
@@ -101,6 +108,11 @@ function App() {
                         <p>
                           <span>{station.price}c</span>/litre
                         </p>
+                        {station.distance && station.duration && (
+                          <p>
+                            {station.distance}, ~{station.duration}
+                          </p>
+                        )}
                       </header>
                       <div className="address">
                         <p>
