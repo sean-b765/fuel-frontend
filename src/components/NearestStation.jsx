@@ -46,6 +46,10 @@ const NearestStation = ({ nearestStation }) => {
 						lat: nearestStation.latitude,
 						lng: nearestStation.longitude,
 					}}
+					center={{
+						lat: nearestStation.latitude,
+						lng: nearestStation.longitude,
+					}}
 					bootstrapURLKeys={{
 						key: 'AIzaSyCrSxicHtmCKnLLuwix7ITt4QFC5E0bKp0',
 					}}

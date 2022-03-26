@@ -6,7 +6,7 @@ const Marker = ({ text }) => {
 				width: `${block}px`,
 				height: `${block}px`,
 				borderRadius: '50%',
-				background: '#0000ff',
+				background: '#ff0000',
 				position: 'relative',
 				display: 'flex',
 				justifyContent: 'center',

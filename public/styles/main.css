@@ -33,7 +33,7 @@ main {
   min-height: 100vh;
   top: 0;
   left: 0;
-  background: #242450;
+  background: #1c1c3d;
 }
 
 main h1,
@@ -55,6 +55,35 @@ main * {
   color: #f0eeee;
   fill: #f0eeee;
   stroke: #f0eeee;
+}
+
+main input {
+  color: #1c1c3d;
+  padding: 0.5rem 0.8rem;
+  max-width: 64px;
+  font-size: 1.1rem;
+}
+
+main .controls {
+  padding: 1rem;
+  padding-top: 2rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+main .controls > * {
+  margin: 0.5rem;
 }
 
 main .loading {

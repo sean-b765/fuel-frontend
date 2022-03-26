@@ -5,6 +5,7 @@ import NearestStation from './components/NearestStation'
 import StationList from './components/StationList'
 import Loading from './components/Loading'
 import { AnimatePresence } from 'framer-motion'
+import { DebounceInput } from 'react-debounce-input'
 
 function App() {
 	const [location, setLocation] = useState({ lat: null, lng: null })
@@ -38,6 +39,17 @@ function App() {
 				{location.lat ? (
 					nearestStation ? (
 						<>
+							<div className="controls">
+								<label htmlFor="radius">Radius</label>
+								<DebounceInput
+									debounceTimeout={500}
+									name="radius"
+									type={'number'}
+									placeholder="5"
+									value={radius}
+									onChange={(e) => setRadius(Number(e.target.value) || 5)}
+								/>
+							</div>
 							<NearestStation nearestStation={nearestStation} />
 							<StationList stations={stations} />
 						</>

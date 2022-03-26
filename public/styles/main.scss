@@ -1,3 +1,5 @@
+$primary: rgb(28, 28, 61);
+
 * {
 	margin: 0;
 	padding: 0;
@@ -23,7 +25,7 @@ main {
 	min-height: 100vh;
 	top: 0;
 	left: 0;
-	background: rgb(36, 36, 80);
+	background: $primary;
 
 	h1,
 	h2,
@@ -44,6 +46,25 @@ main {
 		color: rgb(240, 238, 238);
 		fill: rgb(240, 238, 238);
 		stroke: rgb(240, 238, 238);
+	}
+
+	input {
+		color: $primary;
+		padding: 0.5rem 0.8rem;
+		max-width: 64px;
+		font-size: 1.1rem;
+	}
+
+	.controls {
+		padding: 1rem;
+		padding-top: 2rem;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		flex-direction: column;
+		> * {
+			margin: 0.5rem;
+		}
 	}
 
 	.loading {
