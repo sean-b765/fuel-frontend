@@ -46,6 +46,8 @@ function App() {
 									name="radius"
 									type={'number'}
 									placeholder="5"
+									min="1"
+									max="70"
 									value={radius}
 									onChange={(e) => setRadius(Number(e.target.value) || 5)}
 								/>
