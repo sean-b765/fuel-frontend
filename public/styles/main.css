@@ -64,8 +64,30 @@ main input {
   border: thin solid white;
   border-radius: 3px;
   padding: 0.5rem 0.8rem;
-  max-width: 80px;
+  max-width: 100px;
   font-size: 1.1rem;
+}
+
+main .loading-indicator {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  opacity: 0;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+  -webkit-transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+main .loading-indicator-showing {
+  opacity: 1;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+
+main .loading-indicator svg {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 main .price {
@@ -90,9 +112,9 @@ main .controls {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;

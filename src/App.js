@@ -6,12 +6,15 @@ import StationList from './components/StationList'
 import Loading from './components/Loading'
 import { AnimatePresence } from 'framer-motion'
 import { DebounceInput } from 'react-debounce-input'
+import Emitter from './services/eventemitter'
+import LoadingSVG from './components/LoadingSVG'
 
 function App() {
 	const [location, setLocation] = useState({ lat: null, lng: null })
 	const [nearestStation, setNearestStation] = useState(null)
 	const [stations, setStations] = useState([])
 	const [radius, setRadius] = useState(5)
+	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
 		if (navigator.geolocation) {
@@ -19,6 +22,16 @@ function App() {
 				setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude })
 			})
 		}
+
+		Emitter.on('AXIOS_START', () => {
+			setLoading((state) => true)
+		})
+		Emitter.on('AXIOS_STOP', () => {
+			setLoading((state) => false)
+		})
+
+		// cleanup
+		return () => {}
 	}, [])
 
 	useEffect(() => {
@@ -39,8 +52,17 @@ function App() {
 				{location.lat ? (
 					nearestStation ? (
 						<>
+							<div
+								className={
+									!loading
+										? 'loading-indicator'
+										: 'loading-indicator loading-indicator-showing'
+								}
+							>
+								<LoadingSVG />
+							</div>
 							<div className="controls">
-								<label htmlFor="radius">Radius</label>
+								<label htmlFor="radius">Radius (km)</label>
 								<DebounceInput
 									debounceTimeout={500}
 									name="radius"
