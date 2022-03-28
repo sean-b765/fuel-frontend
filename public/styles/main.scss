@@ -50,9 +50,23 @@ main {
 
 	input {
 		color: $primary;
+		background: $primary;
+		color: white;
+		border: thin solid white;
+		border-radius: 3px;
 		padding: 0.5rem 0.8rem;
-		max-width: 64px;
+		max-width: 80px;
 		font-size: 1.1rem;
+	}
+
+	.price {
+		background: white;
+		color: $primary;
+		padding: 0.3rem;
+		border-radius: 3px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.controls {
@@ -109,6 +123,12 @@ main {
 	}
 
 	.nearest {
+		header {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+		}
 		a {
 			display: flex;
 			align-items: center;
@@ -123,20 +143,25 @@ main {
 			flex-direction: column;
 		}
 		.station {
-			display: grid;
-			grid-template-columns: 1fr 4fr;
+			display: flex;
+			align-items: flex-start;
+			justify-content: flex-start;
+
 			header {
+				.header {
+					display: flex;
+					align-items: center;
+					justify-content: flex-start;
+
+					.price {
+						margin-right: 1rem;
+					}
+				}
 				a {
 					display: flex;
 					align-items: center;
 					justify-content: flex-start;
 				}
-			}
-			.price {
-				display: flex;
-				align-items: center;
-				justify-content: flex-end;
-				margin-right: 1rem;
 			}
 		}
 	}

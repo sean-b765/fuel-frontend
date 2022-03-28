@@ -59,9 +59,29 @@ main * {
 
 main input {
   color: #1c1c3d;
+  background: #1c1c3d;
+  color: white;
+  border: thin solid white;
+  border-radius: 3px;
   padding: 0.5rem 0.8rem;
-  max-width: 64px;
+  max-width: 80px;
   font-size: 1.1rem;
+}
+
+main .price {
+  background: white;
+  color: #1c1c3d;
+  padding: 0.3rem;
+  border-radius: 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 main .controls {
@@ -142,6 +162,22 @@ main a:hover {
           text-decoration-color: #f0eeee;
 }
 
+main .nearest header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
 main .nearest a {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -166,10 +202,31 @@ main .stations .stations_container {
 }
 
 main .stations .station {
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: 1fr 4fr;
-      grid-template-columns: 1fr 4fr;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+main .stations .station header .header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+main .stations .station header .header .price {
+  margin-right: 1rem;
 }
 
 main .stations .station header a {
@@ -182,18 +239,5 @@ main .stations .station header a {
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-}
-
-main .stations .station .price {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-  margin-right: 1rem;
 }
 /*# sourceMappingURL=main.css.map */
