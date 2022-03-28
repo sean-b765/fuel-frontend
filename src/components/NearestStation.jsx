@@ -15,7 +15,12 @@ const NearestStation = ({ nearestStation }) => {
 		>
 			<header>
 				<h1>{nearestStation['trading-name']}</h1>
-				<p className="mono">{nearestStation.price}</p>
+				<p className="mono price">{nearestStation.price}</p>
+				{nearestStation.duration && nearestStation.distance && (
+					<p>
+						{nearestStation.distance}, ~{nearestStation.duration}
+					</p>
+				)}
 				<a
 					href={`https://www.google.com/maps/search/?api=1&query=${nearestStation.address}, ${nearestStation.location}`}
 					target="_blank"
@@ -33,11 +38,6 @@ const NearestStation = ({ nearestStation }) => {
 					</svg>
 					{nearestStation.address}, {nearestStation.location}
 				</a>
-				{nearestStation.duration && nearestStation.distance && (
-					<p>
-						{nearestStation.distance}, ~{nearestStation.duration}
-					</p>
-				)}
 			</header>
 			<div style={{ height: '300px', width: '100%' }} className="map-preview">
 				<GoogleMapReact

@@ -16,9 +16,11 @@ const StationList = ({ stations }) => {
 				{stations.map((station, key) => {
 					return (
 						<div key={key} className="station">
-							<p className="mono price">{station.price}</p>
 							<header>
-								<h3>{station['trading-name']}</h3>
+								<div className="header">
+									<p className="mono price">{station.price}</p>
+									<h3>{station['trading-name']}</h3>
+								</div>
 
 								{station.distance && station.duration && (
 									<p>
