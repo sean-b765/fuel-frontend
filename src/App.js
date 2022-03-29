@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import './App.css'
 import { fetchNearest } from './api/api'
 import NearestStation from './components/NearestStation'
@@ -46,6 +46,10 @@ function App() {
 			.catch((err) => {})
 	}, [location, radius])
 
+	const updateRadius = useCallback((r) => {
+		setRadius(r)
+	}, [])
+
 	return (
 		<main>
 			<AnimatePresence exitBeforeEnter>
@@ -71,7 +75,7 @@ function App() {
 									min="1"
 									max="70"
 									value={radius}
-									onChange={(e) => setRadius(Number(e.target.value) || 5)}
+									onChange={(e) => updateRadius(Number(e.target.value) || 5)}
 								/>
 							</div>
 							<NearestStation nearestStation={nearestStation} />
