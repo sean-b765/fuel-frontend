@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { fetchNearest } from './api/api'
 import NearestStation from './components/NearestStation'
@@ -41,12 +41,12 @@ function App() {
 			.then((res) => {
 				setStations(res.result || [])
 				setNearestStation(res.nearest)
-				console.log(res.nearest)
 			})
 			.catch((err) => {})
 	}, [location, radius])
 
 	const updateRadius = useCallback((r) => {
+		if (r === 0) return
 		setRadius(r)
 	}, [])
 
@@ -75,7 +75,7 @@ function App() {
 									min="1"
 									max="70"
 									value={radius}
-									onChange={(e) => updateRadius(Number(e.target.value) || 5)}
+									onChange={(e) => updateRadius(Number(e.target.value))}
 								/>
 							</div>
 							<NearestStation nearestStation={nearestStation} />
