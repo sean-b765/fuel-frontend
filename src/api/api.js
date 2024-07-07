@@ -20,7 +20,7 @@ API.interceptors.response.use(
 
 export async function fetchNearest(coords, radius) {
 	try {
-		return (await API.get(`/nearestAndCheapest/${coords}?radius=${radius}`))
+		return (await API.get(`/cheapest/${coords}?radius=${radius}`))
 			.data
 	} catch (err) {
 		return err
