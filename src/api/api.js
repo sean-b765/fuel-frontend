@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Emitter from '../services/eventemitter'
 
-const API = axios.create({ baseURL: `https://fuel-perth.herokuapp.com` })
+const API = axios.create({ baseURL: `https://njwn9hkiph.execute-api.ap-southeast-2.amazonaws.com/prod` })
 
 API.interceptors.request.use((req) => {
 	Emitter.emit('AXIOS_START', true)
