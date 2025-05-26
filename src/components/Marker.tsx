@@ -1,4 +1,10 @@
-const Marker = ({ text }) => {
+import React from 'react'
+
+type Props = {
+	text: string
+}
+
+const Marker = ({ text }: Props) => {
 	const block = 10
 	return (
 		<div
