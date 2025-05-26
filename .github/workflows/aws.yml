@@ -23,38 +23,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Debug OIDC Token
-      shell: bash
-      run: |
-        echo ">> ACTIONS_ID_TOKEN_REQUEST_URL: $ACTIONS_ID_TOKEN_REQUEST_URL"
-        echo ">> ACTIONS_ID_TOKEN_REQUEST_TOKEN: $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
-
-        # fetch the raw JWT
-        jwt=$(curl -sSf \
-          -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          "$ACTIONS_ID_TOKEN_REQUEST_URL")
-
-        echo ">> Raw JWT:"
-        echo "$jwt"
-
-        # split into header.payload.signature
-        payload=$(echo "$jwt" | cut -d'.' -f2)
-
-        echo ">> Base64‐URL payload (unpadded):"
-        echo "$payload"
-
-        # translate URL-safe into standard base64, pad, then decode
-        # (the -A flag makes openssl ignore line breaks)
-        decoded=$(echo "$payload" \
-          | tr '_-' '/+' \
-          | awk '{printf "%s", $0}' \
-          | sed 's/\(.\{4\}\)/\1\n/g' \
-          | openssl base64 -d -A)
-
-        echo ">> Decoded payload JSON:"
-        echo "$decoded" | jq .
-
-
     - name: Configure AWS credentials via OIDC
       uses: aws-actions/configure-aws-credentials@v2
       with:
