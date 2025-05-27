@@ -1,5 +1,5 @@
 import "./App.css"
-import { alpha, Box, CssBaseline, Stack } from "@mui/material"
+import { alpha, AppBar, Box, CssBaseline, LinearProgress, Stack } from "@mui/material"
 import { Main } from "./components/Main"
 import Header from "./components/Header"
 import AppTheme from "./theme/AppTheme"
@@ -9,6 +9,7 @@ import { Station } from "./types/station"
 import Emitter from "./services/eventemitter"
 import { fetchNearest } from "./api/api"
 import { FetchNearestResponse } from "./types/dto"
+import { debounce } from 'lodash'
 
 function App() {
   const [location, setLocation] = useState<Partial<Coordinate>>({
@@ -38,19 +39,28 @@ function App() {
     return () => {}
   }, [])
 
+  const debouncedFetch = useCallback(
+     debounce((lat: number, lng: number, rad: number) => {
+      if (!lat || !lng) return
+
+      fetchNearest(`${lat},${lng}`, radius).then(
+        (res: FetchNearestResponse | Error) => {
+          if (res instanceof Error) return
+          
+          setStations(res.Stations || [])
+          setNearestStation(res.Stations[0])
+        }
+      )
+    }, 750),
+    []
+  )
+
   useEffect(() => {
-    if (!location.lat || !location.lng) return
+    if (location.lat && location.lng) debouncedFetch(location.lat, location.lng, radius)
 
-    fetchNearest(`${location.lat},${location.lng}`, radius).then(
-      (res: FetchNearestResponse | Error) => {
-        if (res instanceof Error) return
-        
-        setStations(res.Stations || [])
-        setNearestStation(res.Stations[0])
-      }
-    )
-
-    return () => {}
+    return () => {
+      debouncedFetch.cancel()
+    }
   }, [location, radius])
 
   const updateRadius = useCallback((r: number) => {
@@ -82,9 +92,13 @@ function App() {
             }}
           >
             <Header />
-            <Main stations={stations} radius={radius} updateRadius={updateRadius} />
+            <Main stations={stations} nearestStation={nearestStation} radius={radius} updateRadius={updateRadius} setNearestStation={setNearestStation} />
           </Stack>
         </Box>
+
+        <AppBar position="fixed" sx={{ top: 'auto', bottom: 0 }}>
+          {loading && <LinearProgress variant="indeterminate" />}
+        </AppBar>
       </Box>
     </AppTheme>
   )

@@ -1,14 +1,20 @@
-import { Box, Card, CardContent, Grid, Slider, Typography } from "@mui/material"
+import { Box, Card, CardContent, Grid, Slider, Typography, useMediaQuery, useTheme } from "@mui/material"
 import StationList from "./StationList"
 import { Station } from "../types/station"
+import Map from "./Map"
 
 type Props = {
   stations: Station[],
+  nearestStation: Station | null,
   radius: number,
   updateRadius: (r: number) => void
+  setNearestStation: (s: Station) => void
 }
 
-export const Main = ({ stations, radius, updateRadius }: Props) => {
+export const Main = ({ stations, radius, nearestStation, updateRadius, setNearestStation }: Props) => {
+  const theme = useTheme()
+  const mobile = useMediaQuery(theme.breakpoints.down('md'))
+
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
       <Grid container columns={12} marginBottom={4}>
@@ -30,21 +36,18 @@ export const Main = ({ stations, radius, updateRadius }: Props) => {
       </Grid>
 
       <Grid container spacing={2} columns={12}>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid order={1} size={{ xs: 12, md: 6 }}>
           <Card variant="outlined">
             <CardContent>
-              <Typography gutterBottom variant="h6">
-                <StationList stations={stations} />
-              </Typography>
+              <StationList stations={stations} setNearestStation={setNearestStation} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+
+        <Grid order={mobile ? 0 : 2} size={{ xs: 12, md: 6 }}>
           <Card variant="outlined">
             <CardContent>
-              <Typography gutterBottom variant="h6">
-                Map
-              </Typography>
+              <Map nearestStation={nearestStation} />
             </CardContent>
           </Card>
         </Grid>
