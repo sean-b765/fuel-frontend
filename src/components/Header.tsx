@@ -1,11 +1,13 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
+import { useStore } from "../state/state"
 
 export default function Header() {
+  const date = useStore((s) => s.date)
   return (
     <Stack
       direction="row"
       sx={{
-        display: { xs: "none", md: "flex" },
+        display: "flex",
         width: "100%",
         alignItems: { xs: "flex-start", md: "center" },
         justifyContent: "space-between",
@@ -14,8 +16,18 @@ export default function Header() {
       }}
       spacing={2}
     >
-      <Stack direction="row" sx={{ gap: 1 }}>
-        <Typography component="h1" variant="h3">Perth Fuel</Typography>
+      <Stack direction="row" sx={{ gap: 1 }} alignItems="center">
+        <Box component="span" fontSize="36px">
+          ⛽
+        </Box>
+        <Typography component="h1" variant="h3">
+          Perth Fuel
+        </Typography>
+        {date && (
+          <Typography component="p" variant="subtitle1" sx={{ opacity: 0.75 }}>
+            {date}
+          </Typography>
+        )}
       </Stack>
     </Stack>
   )
