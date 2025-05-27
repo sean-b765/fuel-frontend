@@ -1,30 +1,35 @@
 import "./App.css"
-import { alpha, AppBar, Box, CssBaseline, LinearProgress, Stack } from "@mui/material"
+import {
+  alpha,
+  AppBar,
+  Box,
+  CssBaseline,
+  LinearProgress,
+  Stack,
+} from "@mui/material"
 import { Main } from "./components/Main"
 import Header from "./components/Header"
 import AppTheme from "./theme/AppTheme"
 import { useCallback, useEffect, useState } from "react"
-import { Coordinate } from "./types/util"
-import { Station } from "./types/station"
 import Emitter from "./services/eventemitter"
 import { fetchNearest } from "./api/api"
 import { FetchNearestResponse } from "./types/dto"
-import { debounce } from 'lodash'
+import { debounce } from "lodash"
+import { useStore } from "./state/state"
 
 function App() {
-  const [location, setLocation] = useState<Partial<Coordinate>>({
-    lat: undefined,
-    lng: undefined,
-  })
-  const [nearestStation, setNearestStation] = useState<Station | null>(null)
-  const [stations, setStations] = useState<Station[]>([])
-  const [radius, setRadius] = useState<number>(5)
   const [loading, setLoading] = useState(false)
 
+  const setStations = useStore(state => state.setStations)
+  const searchRadius = useStore(state => state.searchRadius)
+  const userLocation = useStore(state => state.userLocation)
+  const setUserLocation = useStore(state => state.setUserLocation)
+  const setDate = useStore(state => state.setDate)
+  
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
-        setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude })
       })
     }
 
@@ -40,15 +45,15 @@ function App() {
   }, [])
 
   const debouncedFetch = useCallback(
-     debounce((lat: number, lng: number, rad: number) => {
+    debounce((lat: number, lng: number, rad: number) => {
       if (!lat || !lng) return
 
-      fetchNearest(`${lat},${lng}`, radius).then(
+      fetchNearest(`${lat},${lng}`, rad).then(
         (res: FetchNearestResponse | Error) => {
           if (res instanceof Error) return
-          
+
           setStations(res.Stations || [])
-          setNearestStation(res.Stations[0])
+          if (res.Date) setDate(res.Date)
         }
       )
     }, 750),
@@ -56,17 +61,13 @@ function App() {
   )
 
   useEffect(() => {
-    if (location.lat && location.lng) debouncedFetch(location.lat, location.lng, radius)
+    if (userLocation && userLocation.lat && userLocation.lng)
+      debouncedFetch(userLocation.lat, userLocation.lng, searchRadius)
 
     return () => {
       debouncedFetch.cancel()
     }
-  }, [location, radius])
-
-  const updateRadius = useCallback((r: number) => {
-    if (r === 0) return
-    setRadius(r)
-  }, [])
+  }, [userLocation, searchRadius])
 
   return (
     <AppTheme>
@@ -92,11 +93,11 @@ function App() {
             }}
           >
             <Header />
-            <Main stations={stations} nearestStation={nearestStation} radius={radius} updateRadius={updateRadius} setNearestStation={setNearestStation} />
+            <Main />
           </Stack>
         </Box>
 
-        <AppBar position="fixed" sx={{ top: 'auto', bottom: 0 }}>
+        <AppBar position="fixed" sx={{ top: "auto", bottom: 0 }}>
           {loading && <LinearProgress variant="indeterminate" />}
         </AppBar>
       </Box>
