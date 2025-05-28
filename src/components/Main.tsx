@@ -19,7 +19,7 @@ export const Main = ({}: Props) => {
 
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
-      <Grid container columns={12} spacing={2} mb={2}>
+      <Grid container columns={12} spacing={2} mb={2} justifyContent={!selectedStation ? "center" : "flex-start"}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Controls />
         </Grid>
@@ -35,11 +35,9 @@ export const Main = ({}: Props) => {
           <StationList />
         </Grid>
 
-        {selectedStation && (
-          <Grid order={mobile ? 0 : 2} size={{ xs: 12, md: 6 }}>
-            <Map />
-          </Grid>
-        )}
+        <Grid order={mobile ? 0 : 2} size={{ xs: 12, md: 6 }} display={selectedStation ? 'block' : 'none'}>
+          <Map />
+        </Grid>
       </Grid>
     </Box>
   )
