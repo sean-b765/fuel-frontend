@@ -3,7 +3,7 @@ import Emitter from "../services/eventemitter"
 import { FetchNearestResponse } from "../types/dto"
 
 const API = axios.create({
-  baseURL: `https://njwn9hkiph.execute-api.ap-southeast-2.amazonaws.com/prod`,
+  baseURL: process.env.REACT_APP_BASE_URL,
 })
 
 API.interceptors.request.use((req: any) => {
