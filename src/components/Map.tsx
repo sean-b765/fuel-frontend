@@ -6,22 +6,45 @@ import {
   Grid,
   Typography,
 } from "@mui/material"
-import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl"
+import ReactMapboxGL from "react-mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 import { useStore } from "../state/state"
-import React from "react"
+import React, { Ref, useEffect, useRef, useState } from "react"
+import Pin from "./Pin"
+import mapboxGl, { Map as MapboxGLMap, Layer, Marker } from "mapbox-gl"
+import UserLocationMarker from "./UserLocationMarker"
+import SelectedStationMarker from "./SelectedStationMarker"
+import disabledPin from "../assets/disabled-pin.png"
+import StationMarkers from "./StationMarkers"
 
-// TODO this will load each time selectedStation changes, eating up my API key usage quota
-//  It should load ONCE only. Any subsequent changes to selectedStation should animate the map to the next station
+mapboxGl.accessToken = process.env.REACT_APP_MAPBOX_KEY
+
 const Map = ({}) => {
-  const Mapbox = ReactMapboxGl({
-    accessToken:
-      "pk.eyJ1Ijoic2VhbmIwMTUzIiwiYSI6ImNtYjYzZHI2MjBoOGkyanFzeGdhcm0xYXMifQ.VDYysO0qDb5wBACX7zWH2A",
-  })
-
+  const mapRef = useRef<MapboxGLMap | null>(null)
+  const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const selectedStation = useStore((state) => state.selectedStation)
 
-  if (!selectedStation) return <></>
+  // Initialise the map
+  useEffect(() => {
+    if (mapRef.current || !mapContainerRef.current) return // initialized already, or no container available
+
+    const map = new MapboxGLMap({
+      container: mapContainerRef.current,
+      style: "mapbox://styles/mapbox/dark-v11",
+      center: [115.86256114388702, -31.950664055777565],
+      zoom: 12,
+    })
+
+    map.on("style.load", () => {
+      mapRef.current = map
+
+      // Register images
+      mapRef.current.loadImage(disabledPin, (err, img) => {
+        if (mapRef.current == null || err) return
+        mapRef.current.addImage("disabled-pin", img as ImageBitmap)
+      })
+    })
+  }, [])
 
   return (
     <Card variant="outlined">
@@ -36,20 +59,22 @@ const Map = ({}) => {
               {selectedStation ? selectedStation.TradingName : "Map"}
             </Typography>
           </Grid>
-          {selectedStation && (
-            <Grid mt={2} size={12}>
-              <Grid size={12} minHeight={300} sx={{ position: "relative" }}>
-                <Mapbox
-                  style="mapbox://styles/mapbox/streets-v9"
-                  containerStyle={{
-                    width: "100%",
-                    height: "100%",
-                    position: "absolute",
-                  }}
-                  center={[Number(selectedStation.Longitude), Number(selectedStation.Latitude)]}
-                ></Mapbox>
-              </Grid>
-              {/* Price, distance */}
+          <Grid mt={2} size={12}>
+            <Grid size={12} height={300} sx={{ position: "relative" }}>
+              <div
+                ref={mapContainerRef}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <UserLocationMarker map={mapRef.current} />
+                <SelectedStationMarker map={mapRef.current} />
+                <StationMarkers map={mapRef.current} />
+              </div>
+            </Grid>
+            {/* Price, distance */}
+            {selectedStation && (
               <Grid size={12} my={2}>
                 <Grid>
                   <Chip
@@ -65,7 +90,9 @@ const Map = ({}) => {
                   />
                 </Grid>
               </Grid>
-              {/* Details */}
+            )}
+            {/* Details */}
+            {selectedStation && (
               <Grid size={12} mb={2}>
                 {selectedStation.Address && (
                   <Typography variant="body2">
@@ -95,8 +122,8 @@ const Map = ({}) => {
                   </Typography>
                 )}
               </Grid>
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
       </CardContent>
     </Card>
