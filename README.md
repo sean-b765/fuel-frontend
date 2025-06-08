@@ -1,8 +1,8 @@
 # Perth Fuel
 
-Written in `React.js`
-State management via `zustand`
-UI via `mui`
+`React.js`
+State management: `zustand`
+UI: `mui`
 
 **Third-Party**
 `react-mapbox-gl`

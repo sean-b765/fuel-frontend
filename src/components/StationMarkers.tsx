@@ -63,7 +63,7 @@ export default function StationMarkers({ map }: Props) {
           "icon-image": "disabled-pin",
           "icon-allow-overlap": true,
           "icon-anchor": "bottom",
-          "icon-size": 1.2,
+          "icon-size": 0.1,
         },
       })
       geoJsonSource.current = map.getSource("stations")

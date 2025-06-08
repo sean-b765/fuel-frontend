@@ -6,16 +6,16 @@ import {
   Grid,
   Typography,
 } from "@mui/material"
-import ReactMapboxGL from "react-mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 import { useStore } from "../state/state"
-import React, { Ref, useEffect, useRef, useState } from "react"
-import Pin from "./Pin"
-import mapboxGl, { Map as MapboxGLMap, Layer, Marker } from "mapbox-gl"
+import React, { useEffect, useRef } from "react"
+import mapboxGl, { Map as MapboxGLMap } from "mapbox-gl"
 import UserLocationMarker from "./UserLocationMarker"
 import SelectedStationMarker from "./SelectedStationMarker"
 import disabledPin from "../assets/disabled-pin.png"
 import StationMarkers from "./StationMarkers"
+import { fetchJourney } from "../api/api"
+import { Journey } from "../types/util"
 
 mapboxGl.accessToken = process.env.REACT_APP_MAPBOX_KEY
 
@@ -23,6 +23,9 @@ const Map = ({}) => {
   const mapRef = useRef<MapboxGLMap | null>(null)
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const selectedStation = useStore((state) => state.selectedStation)
+  const journey = useStore((state) => state.journey)
+  const setJourney = useStore((state) => state.setJourney)
+  const userLocation = useStore((state) => state.userLocation)
 
   // Initialise the map
   useEffect(() => {
@@ -46,6 +49,18 @@ const Map = ({}) => {
     })
   }, [])
 
+  useEffect(() => {
+    if (selectedStation == undefined || userLocation == undefined) return
+
+    fetchJourney(
+      `${userLocation.lat},${userLocation.lng}`,
+      `${selectedStation.Latitude},${selectedStation.Longitude}`
+    ).then((journey) => {
+      if (journey == undefined) return
+      setJourney(journey as Journey)
+    })
+  }, [selectedStation, userLocation])
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -60,7 +75,7 @@ const Map = ({}) => {
             </Typography>
           </Grid>
           <Grid mt={2} size={12}>
-            <Grid size={12} height={300} sx={{ position: "relative" }}>
+            <Grid size={12} height={500} sx={{ position: "relative" }}>
               <div
                 ref={mapContainerRef}
                 style={{
@@ -109,19 +124,14 @@ const Map = ({}) => {
                     {selectedStation.Phone}
                   </Typography>
                 )}
-                {(selectedStation.JourneyDistance ||
-                  selectedStation.JourneyTime) && <Divider sx={{ my: 1 }} />}
-                {selectedStation.JourneyTime && (
-                  <Typography variant="body2">
-                    {selectedStation.JourneyTime}
-                  </Typography>
-                )}
-                {selectedStation.JourneyDistance && (
-                  <Typography variant="body2">
-                    {selectedStation.JourneyDistance}
-                  </Typography>
-                )}
               </Grid>
+            )}
+            {journey && (
+              <>
+                <Divider sx={{ my: 1 }} />
+                <Typography variant="body2">{journey.Duration}</Typography>
+                <Typography variant="body2">{journey.Distance}</Typography>
+              </>
             )}
           </Grid>
         </Grid>

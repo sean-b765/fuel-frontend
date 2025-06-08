@@ -1,6 +1,7 @@
 import axios from "axios"
 import Emitter from "../services/eventemitter"
 import { FetchNearestResponse } from "../types/dto"
+import { Journey } from "../types/util"
 
 const API = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -21,9 +22,25 @@ API.interceptors.response.use(
   }
 )
 
-export async function fetchNearest(coords: string, radius: number | string): Promise<FetchNearestResponse | Error> {
+export async function fetchNearest(
+  coords: string,
+  radius: number | string
+): Promise<FetchNearestResponse | Error> {
   try {
     return (await API.get(`/cheapest/${coords}?radius=${radius}`)).data
+  } catch (err) {
+    return err as Error
+  }
+}
+
+export async function fetchJourney(
+  origin: string,
+  destination: string
+): Promise<Journey | Error> {
+  try {
+    return (
+      await API.get(`/journey?origin=${origin}&destination=${destination}`)
+    ).data
   } catch (err) {
     return err as Error
   }

@@ -13,7 +13,11 @@ export default function UserLocationMarker({ map }: Props) {
   const userLocationMarkerRef = useRef<Marker | null>(null)
 
   useEffect(() => {
-    if (map == null || userLocation == undefined) return
+    if (userLocation == undefined) {
+      userLocationMarkerRef.current = null
+      return
+    }
+    if (map == null) return
 
     const { lat, lng } = userLocation
 
