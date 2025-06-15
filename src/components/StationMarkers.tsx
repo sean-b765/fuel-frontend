@@ -46,9 +46,9 @@ export default function StationMarkers({ map }: Props) {
   }, [stations, selectedStation])
 
   useEffect(() => {
-    if (map == null || stations.length == 0) return
+    if (map === null || stations.length === 0) return
 
-    if (geoJsonSource.current == undefined) {
+    if (geoJsonSource.current === undefined) {
       // Create the source
       map.addSource("stations", {
         type: "geojson",
