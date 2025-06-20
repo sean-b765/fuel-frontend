@@ -24,6 +24,7 @@ import { DriveEta, Launch } from "@mui/icons-material"
 mapboxGl.accessToken = process.env.REACT_APP_MAPBOX_KEY
 
 const Map = () => {
+  const [initialised, setInitialised] = useState(false)
   const mapRef = useRef<MapboxGLMap | null>(null)
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const [journeyLoading, setJourneyLoading] = useState(false)
@@ -51,16 +52,19 @@ const Map = () => {
         if (mapRef.current == null || err) return
         mapRef.current.addImage("disabled-pin", img as ImageBitmap)
       })
+
+      setInitialised(true)
     })
   }, [])
 
+  // Initialize the map center
   useEffect(() => {
-    if (mapRef.current === null) return
-    if (userLocation === undefined) return
+    if (mapRef.current == null || userLocation === undefined) return
 
     mapRef.current.setCenter([userLocation.lng, userLocation.lat])
-  }, [userLocation, mapRef.current])
+  }, [userLocation, initialised])
 
+  // Fetch the google directions journey when userLocation or selectedStation changes
   useEffect(() => {
     if (selectedStation === undefined || userLocation === undefined) return
 
@@ -100,9 +104,24 @@ const Map = () => {
                   height: "100%",
                 }}
               >
-                <UserLocationMarker map={mapRef.current} />
-                <SelectedStationMarker map={mapRef.current} />
-                <StationMarkers map={mapRef.current} />
+                {initialised && (
+                  <>
+                    <UserLocationMarker map={mapRef.current} />
+                    <SelectedStationMarker map={mapRef.current} />
+                    <StationMarkers map={mapRef.current} />
+                  </>
+                )}
+                {!initialised && (
+                  <CircularProgress
+                    variant="indeterminate"
+                    size={30}
+                    sx={{
+                      position: "absolute",
+                      left: "calc(50% - 15px)",
+                      top: "calc(50% - 15px)",
+                    }}
+                  />
+                )}
               </div>
             </Grid>
             {/* Price, distance */}
