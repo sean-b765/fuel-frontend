@@ -13,7 +13,11 @@ export default function UserLocationMarker({ map }: Props) {
   const userLocationMarkerRef = useRef<Marker | null>(null)
 
   useEffect(() => {
-    if (map == null || userLocation == undefined) return
+    if (userLocation === undefined) {
+      userLocationMarkerRef.current = null
+      return
+    }
+    if (map == null) return
 
     const { lat, lng } = userLocation
 
@@ -24,7 +28,7 @@ export default function UserLocationMarker({ map }: Props) {
       // Create a marker
       const element = document.createElement("div")
       const root = createRoot(element)
-      root.render(<Pin color="#00d" />)
+      root.render(<Pin color="#6733ff" />)
 
       userLocationMarkerRef.current = new Marker({
         element,

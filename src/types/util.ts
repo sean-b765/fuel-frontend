@@ -4,3 +4,8 @@ export type Coordinate = {
 }
 
 export type GlobalEmits = "AXIOS_START" | "AXIOS_STOP"
+
+export type Journey = {
+  Distance: string
+  Duration: string
+}

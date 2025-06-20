@@ -2,27 +2,36 @@ import {
   Card,
   CardContent,
   Chip,
+  CircularProgress,
   Divider,
   Grid,
+  Link,
+  Tooltip,
   Typography,
 } from "@mui/material"
-import ReactMapboxGL from "react-mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 import { useStore } from "../state/state"
-import React, { Ref, useEffect, useRef, useState } from "react"
-import Pin from "./Pin"
-import mapboxGl, { Map as MapboxGLMap, Layer, Marker } from "mapbox-gl"
+import React, { useEffect, useRef, useState } from "react"
+import mapboxGl, { Map as MapboxGLMap } from "mapbox-gl"
 import UserLocationMarker from "./UserLocationMarker"
 import SelectedStationMarker from "./SelectedStationMarker"
 import disabledPin from "../assets/disabled-pin.png"
 import StationMarkers from "./StationMarkers"
+import { fetchJourney } from "../api/api"
+import { Journey } from "../types/util"
+import { DriveEta, Launch } from "@mui/icons-material"
 
 mapboxGl.accessToken = process.env.REACT_APP_MAPBOX_KEY
 
-const Map = ({}) => {
+const Map = () => {
+  const [initialised, setInitialised] = useState(false)
   const mapRef = useRef<MapboxGLMap | null>(null)
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
+  const [journeyLoading, setJourneyLoading] = useState(false)
   const selectedStation = useStore((state) => state.selectedStation)
+  const journey = useStore((state) => state.journey)
+  const setJourney = useStore((state) => state.setJourney)
+  const userLocation = useStore((state) => state.userLocation)
 
   // Initialise the map
   useEffect(() => {
@@ -43,8 +52,35 @@ const Map = ({}) => {
         if (mapRef.current == null || err) return
         mapRef.current.addImage("disabled-pin", img as ImageBitmap)
       })
+
+      setInitialised(true)
     })
   }, [])
+
+  // Initialize the map center
+  useEffect(() => {
+    if (mapRef.current == null || userLocation === undefined) return
+
+    mapRef.current.setCenter([userLocation.lng, userLocation.lat])
+  }, [userLocation, initialised])
+
+  // Fetch the google directions journey when userLocation or selectedStation changes
+  useEffect(() => {
+    if (selectedStation === undefined || userLocation === undefined) return
+
+    setJourneyLoading(true)
+    fetchJourney(
+      `${userLocation.lat},${userLocation.lng}`,
+      `${selectedStation.Latitude},${selectedStation.Longitude}`
+    )
+      .then((journey) => {
+        if (journey === undefined) return
+        setJourney(journey as Journey)
+      })
+      .finally(() => {
+        setJourneyLoading(false)
+      })
+  }, [selectedStation, userLocation])
 
   return (
     <Card variant="outlined">
@@ -60,7 +96,7 @@ const Map = ({}) => {
             </Typography>
           </Grid>
           <Grid mt={2} size={12}>
-            <Grid size={12} height={300} sx={{ position: "relative" }}>
+            <Grid size={12} height={500} sx={{ position: "relative" }}>
               <div
                 ref={mapContainerRef}
                 style={{
@@ -68,9 +104,24 @@ const Map = ({}) => {
                   height: "100%",
                 }}
               >
-                <UserLocationMarker map={mapRef.current} />
-                <SelectedStationMarker map={mapRef.current} />
-                <StationMarkers map={mapRef.current} />
+                {initialised && (
+                  <>
+                    <UserLocationMarker map={mapRef.current} />
+                    <SelectedStationMarker map={mapRef.current} />
+                    <StationMarkers map={mapRef.current} />
+                  </>
+                )}
+                {!initialised && (
+                  <CircularProgress
+                    variant="indeterminate"
+                    size={30}
+                    sx={{
+                      position: "absolute",
+                      left: "calc(50% - 15px)",
+                      top: "calc(50% - 15px)",
+                    }}
+                  />
+                )}
               </div>
             </Grid>
             {/* Price, distance */}
@@ -109,19 +160,32 @@ const Map = ({}) => {
                     {selectedStation.Phone}
                   </Typography>
                 )}
-                {(selectedStation.JourneyDistance ||
-                  selectedStation.JourneyTime) && <Divider sx={{ my: 1 }} />}
-                {selectedStation.JourneyTime && (
-                  <Typography variant="body2">
-                    {selectedStation.JourneyTime}
-                  </Typography>
-                )}
-                {selectedStation.JourneyDistance && (
-                  <Typography variant="body2">
-                    {selectedStation.JourneyDistance}
-                  </Typography>
-                )}
               </Grid>
+            )}
+            {journey && !journeyLoading && (
+              <>
+                <Divider sx={{ my: 1 }} />
+                <Typography variant="body2" display="flex">
+                  <DriveEta color="disabled" sx={{ mr: 1 }} />
+                  <Tooltip title="Open directions in Google Maps">
+                    <Link
+                      href={`https://www.google.com/maps/dir/${userLocation?.lat},${userLocation?.lng}/${selectedStation?.Latitude},${selectedStation?.Longitude}`}
+                      target="_blank"
+                      color="textPrimary"
+                      sx={{ textDecoration: "none" }}
+                    >
+                      {journey.Duration} | {journey.Distance}
+                      <Launch sx={{ ml: 1, fontSize: "14px" }} />
+                    </Link>
+                  </Tooltip>
+                </Typography>
+              </>
+            )}
+            {journeyLoading && (
+              <>
+                <Divider sx={{ my: 1 }} />
+                <CircularProgress variant="indeterminate" size={20} />
+              </>
             )}
           </Grid>
         </Grid>

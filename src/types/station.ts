@@ -10,6 +10,4 @@ export type Station = {
   Latitude: string
   Longitude: string
   DistanceTo: number
-  JourneyTime: string
-  JourneyDistance: string
 }

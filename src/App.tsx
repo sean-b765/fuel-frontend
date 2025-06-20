@@ -20,12 +20,12 @@ import { useStore } from "./state/state"
 function App() {
   const [loading, setLoading] = useState(false)
 
-  const setStations = useStore(state => state.setStations)
-  const searchRadius = useStore(state => state.searchRadius)
-  const userLocation = useStore(state => state.userLocation)
-  const setUserLocation = useStore(state => state.setUserLocation)
-  const setDate = useStore(state => state.setDate)
-  
+  const setStations = useStore((state) => state.setStations)
+  const searchRadius = useStore((state) => state.searchRadius)
+  const userLocation = useStore((state) => state.userLocation)
+  const setUserLocation = useStore((state) => state.setUserLocation)
+  const setDate = useStore((state) => state.setDate)
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {

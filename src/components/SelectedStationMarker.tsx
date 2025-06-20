@@ -13,7 +13,11 @@ export default function SelectedStationMarker({ map }: Props) {
   const selectedStationMarkerRef = useRef<Marker | null>(null)
 
   useEffect(() => {
-    if (map == null || selectedStation == undefined) return
+    if (selectedStation === undefined) {
+      selectedStationMarkerRef.current = null
+      return
+    }
+    if (map === null) return
 
     const lat = Number(selectedStation.Latitude)
     const lng = Number(selectedStation.Longitude)
@@ -30,7 +34,7 @@ export default function SelectedStationMarker({ map }: Props) {
       // Create the marker
       const element = document.createElement("div")
       const root = createRoot(element)
-      root.render(<Pin />)
+      root.render(<Pin color="#ff5733" />)
 
       selectedStationMarkerRef.current = new Marker({
         element,

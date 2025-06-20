@@ -41,7 +41,14 @@ const StationList = ({}: Props) => {
                     followCursor
                     title={`${station.Address} | ${station.Phone}`}
                   >
-                    <ListItemButton selected={station == selectedStation} onClick={() => station == selectedStation ? setSelectedStation(undefined) : setSelectedStation(station)}>
+                    <ListItemButton
+                      selected={station === selectedStation}
+                      onClick={() =>
+                        station === selectedStation
+                          ? setSelectedStation(undefined)
+                          : setSelectedStation(station)
+                      }
+                    >
                       <ListItemIcon>
                         <Chip
                           size="small"

@@ -1,9 +1,4 @@
-import {
-  Box,
-  Grid,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material"
+import { Box, Grid, useMediaQuery, useTheme } from "@mui/material"
 import StationList from "./StationList"
 import Map from "./Map"
 import { useStore } from "../state/state"
@@ -19,23 +14,18 @@ export const Main = ({}: Props) => {
 
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
-      <Grid container columns={12} spacing={2} mb={2} justifyContent={!selectedStation ? "center" : "flex-start"}>
+      <Grid container columns={12} spacing={2} mb={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Controls />
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        spacing={2}
-        justifyContent={!selectedStation ? "center" : "flex-start"}
-        columns={12}
-      >
+      <Grid container spacing={2} columns={12}>
         <Grid order={1} size={{ xs: 12, md: 6 }}>
           <StationList />
         </Grid>
 
-        <Grid order={mobile ? 0 : 2} size={{ xs: 12, md: 6 }} display={selectedStation ? 'block' : 'none'}>
+        <Grid order={mobile ? 0 : 2} size={{ xs: 12, md: 6 }}>
           <Map />
         </Grid>
       </Grid>
