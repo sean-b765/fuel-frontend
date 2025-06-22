@@ -19,7 +19,8 @@ import disabledPin from "../assets/disabled-pin.png"
 import StationMarkers from "./StationMarkers"
 import { fetchJourney } from "../api/api"
 import { Journey } from "../types/util"
-import { DriveEta, Launch } from "@mui/icons-material"
+import DriveEta from "../icons/DriveEta"
+import Launch from "../icons/Launch"
 
 mapboxGl.accessToken = process.env.REACT_APP_MAPBOX_KEY
 
@@ -166,7 +167,11 @@ const Map = () => {
               <>
                 <Divider sx={{ my: 1 }} />
                 <Typography variant="body2" display="flex">
-                  <DriveEta color="disabled" sx={{ mr: 1 }} />
+                  <DriveEta
+                    size={20}
+                    sx={{ mr: 1, display: "flex", alignItems: "center" }}
+                    color="#555"
+                  />
                   <Tooltip title="Open directions in Google Maps">
                     <Link
                       href={`https://www.google.com/maps/dir/${userLocation?.lat},${userLocation?.lng}/${selectedStation?.Latitude},${selectedStation?.Longitude}`}
@@ -175,7 +180,11 @@ const Map = () => {
                       sx={{ textDecoration: "none" }}
                     >
                       {journey.Duration} | {journey.Distance}
-                      <Launch sx={{ ml: 1, fontSize: "14px" }} />
+                      <Launch
+                        size={12}
+                        sx={{ ml: 1, display: "inline" }}
+                        color="white"
+                      />
                     </Link>
                   </Tooltip>
                 </Typography>
