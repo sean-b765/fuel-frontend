@@ -167,7 +167,11 @@ const Map = () => {
               <>
                 <Divider sx={{ my: 1 }} />
                 <Typography variant="body2" display="flex">
-                  <DriveEta />
+                  <DriveEta
+                    size={20}
+                    sx={{ mr: 1, display: "flex", alignItems: "center" }}
+                    color="#555"
+                  />
                   <Tooltip title="Open directions in Google Maps">
                     <Link
                       href={`https://www.google.com/maps/dir/${userLocation?.lat},${userLocation?.lng}/${selectedStation?.Latitude},${selectedStation?.Longitude}`}
@@ -176,7 +180,11 @@ const Map = () => {
                       sx={{ textDecoration: "none" }}
                     >
                       {journey.Duration} | {journey.Distance}
-                      <Launch />
+                      <Launch
+                        size={12}
+                        sx={{ ml: 1, display: "inline" }}
+                        color="white"
+                      />
                     </Link>
                   </Tooltip>
                 </Typography>
